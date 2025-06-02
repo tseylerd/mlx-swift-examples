@@ -131,7 +131,7 @@ public class LLMRegistry: AbstractModelRegistry, @unchecked Sendable {
     )
     
     static public let gemma_3_4b_it_qat_4bit = ModelConfiguration(
-        id: "mlx-community/gemma-3-4b-it-qat-4bit",
+        id: "mlx-community/gemma-3-4b-it-4bit",
         overrideTokenizer: "PreTrainedTokenizer",
         // https://www.promptingguide.ai/models/gemma
         defaultPrompt: "What is the difference between lettuce and cabbage?"

@@ -237,6 +237,10 @@ public struct Gemma3Configuration: Codable {
     var slidingWindow: Int = 512
     var slidingWindowPattern: Int = 6
 
+    enum RootKeys: String, CodingKey {
+        case textConfig = "text_config"
+    }
+    
     enum CodingKeys: String, CodingKey {
         case hiddenSize = "hidden_size"
         case hiddenLayers = "num_hidden_layers"
@@ -255,24 +259,25 @@ public struct Gemma3Configuration: Codable {
     }
 
     public init(from decoder: Decoder) throws {
-        let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(
-            keyedBy: CodingKeys.self)
-
+        let rootContainer: KeyedDecodingContainer<RootKeys> = try decoder.container(
+            keyedBy: RootKeys.self)
+        let container = try rootContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .textConfig)
+        
         self.hiddenSize = try container.decode(
             Int.self, forKey: CodingKeys.hiddenSize)
         self.hiddenLayers = try container.decode(
             Int.self, forKey: CodingKeys.hiddenLayers)
         self.intermediateSize = try container.decode(
             Int.self, forKey: CodingKeys.intermediateSize)
-        self.attentionHeads = try container.decode(
-            Int.self, forKey: CodingKeys.attentionHeads)
-        self.headDimensions = try container.decode(
-            Int.self, forKey: CodingKeys.headDimensions)
-        self.rmsNormEps = try container.decode(
-            Float.self, forKey: CodingKeys.rmsNormEps)
-        self.vocabularySize = try container.decode(
-            Int.self, forKey: CodingKeys.vocabularySize)
-        self.kvHeads = try container.decode(Int.self, forKey: CodingKeys.kvHeads)
+        self.attentionHeads = try container.decodeIfPresent(
+            Int.self, forKey: CodingKeys.attentionHeads) ?? 8
+        self.headDimensions = try container.decodeIfPresent(
+            Int.self, forKey: CodingKeys.headDimensions) ?? 256
+        self.rmsNormEps = try container.decodeIfPresent(
+            Float.self, forKey: CodingKeys.rmsNormEps) ?? 1.0e-6
+        self.vocabularySize = try container.decodeIfPresent(
+            Int.self, forKey: CodingKeys.vocabularySize) ?? 262208
+        self.kvHeads = try container.decodeIfPresent(Int.self, forKey: CodingKeys.kvHeads) ?? 4
         self.ropeGlobalBaseFreq =
         try container.decodeIfPresent(Float.self, forKey: CodingKeys.ropeGlobalBaseFreq)
             ?? 1_000_000
@@ -282,12 +287,12 @@ public struct Gemma3Configuration: Codable {
         self.ropeTraditional =
             try container.decodeIfPresent(
                 Bool.self, forKey: CodingKeys.ropeTraditional) ?? false
-        self.queryPreAttnScalar = try container.decode(
-            Float.self, forKey: CodingKeys.queryPreAttnScalar)
+        self.queryPreAttnScalar = try container.decodeIfPresent(
+            Float.self, forKey: CodingKeys.queryPreAttnScalar) ?? 256
         self.slidingWindow = try container.decode(
             Int.self, forKey: CodingKeys.slidingWindow)
-        self.slidingWindowPattern = try container.decode(
-            Int.self, forKey: CodingKeys.slidingWindowPattern)
+        self.slidingWindowPattern = try container.decodeIfPresent(
+            Int.self, forKey: CodingKeys.slidingWindowPattern) ?? 6
     }
 }
 
