@@ -35,6 +35,7 @@ public class LLMTypeRegistry: ModelTypeRegistry, @unchecked Sendable {
             "phimoe": create(PhiMoEConfiguration.self, PhiMoEModel.init),
             "gemma": create(GemmaConfiguration.self, GemmaModel.init),
             "gemma2": create(Gemma2Configuration.self, Gemma2Model.init),
+            "gemma3": create(Gemma3Configuration.self, Gemma3Model.init),
             "qwen2": create(Qwen2Configuration.self, Qwen2Model.init),
             "qwen3": create(Qwen3Configuration.self, Qwen3Model.init),
             "qwen3_moe": create(Qwen3MoEConfiguration.self, Qwen3MoEModel.init),
@@ -124,6 +125,13 @@ public class LLMRegistry: AbstractModelRegistry, @unchecked Sendable {
 
     static public let gemma_2_2b_it_4bit = ModelConfiguration(
         id: "mlx-community/gemma-2-2b-it-4bit",
+        overrideTokenizer: "PreTrainedTokenizer",
+        // https://www.promptingguide.ai/models/gemma
+        defaultPrompt: "What is the difference between lettuce and cabbage?"
+    )
+    
+    static public let gemma_3_4b_it_qat_4bit = ModelConfiguration(
+        id: "mlx-community/gemma-3-4b-it-qat-4bit",
         overrideTokenizer: "PreTrainedTokenizer",
         // https://www.promptingguide.ai/models/gemma
         defaultPrompt: "What is the difference between lettuce and cabbage?"
